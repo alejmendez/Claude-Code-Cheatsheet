@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — Cheatsheet para Devs 🚀</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+--bg:#06080f;
+--bg2:#0c1020;
+--card:#0f1629;
+--card-border:#1a2240;
+--cyan:#00d4ff;
+--purple:#8b5cf6;
+--green:#10b981;
+--amber:#f59e0b;
+--red:#ef4444;
+--teal:#14b8a6;
+--pink:#ec4899;
+--text:#e2e8f0;
+--text-dim:#64748b;
+--text-code:#cbd5e1;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+background:var(--bg);
+color:var(--text);
+font-family:'Inter',sans-serif;
+line-height:1.6;
+overflow-x:hidden;
+}
+
+.bg-grid{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background-image:
+  radial-gradient(ellipse 80% 50% at 50% -20%,rgba(99,102,241,.15),transparent),
+  radial-gradient(ellipse 60% 40% at 80% 60%,rgba(139,92,246,.08),transparent),
+  radial-gradient(ellipse 60% 40% at 10% 80%,rgba(0,212,255,.06),transparent);
+pointer-events:none;z-index:0;
+}
+
+.bg-dots{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
+background-size:32px 32px;
+pointer-events:none;z-index:0;
+}
+
+.container{max-width:1200px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+
+/* Hero */
+.hero{
+text-align:center;
+padding:80px 0 60px;
+position:relative;
+}
+
+.hero-badge{
+display:inline-flex;align-items:center;gap:8px;
+background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);
+padding:6px 16px;border-radius:100px;font-size:13px;color:var(--purple);
+font-weight:500;margin-bottom:24px;
+letter-spacing:.5px;
+}
+
+.hero h1{
+font-size:clamp(2.5rem,6vw,4.5rem);
+font-weight:900;
+letter-spacing:-2px;
+line-height:1.1;
+margin-bottom:16px;
+}
+
+.hero h1 .grad{
+background:linear-gradient(135deg,var(--cyan),var(--purple),var(--pink));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+font-size:clamp(1rem,2vw,1.25rem);
+color:var(--text-dim);
+max-width:600px;margin:0 auto 32px;
+}
+
+.hero-stats{
+display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+margin-top:40px;
+}
+
+.hero-stats .stat{text-align:center}
+.hero-stats .num{font-size:2rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.hero-stats .label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* Nav */
+.nav-bar{
+position:sticky;top:0;z-index:100;
+background:rgba(6,8,15,.8);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.05);
+padding:12px 0;
+}
+
+.nav-inner{
+display:flex;align-items:center;gap:8px;
+overflow-x:auto;
+scrollbar-width:none;
+padding:0 20px;
+max-width:1200px;margin:0 auto;
+}
+.nav-inner::-webkit-scrollbar{display:none}
+
+.nav-btn{
+flex-shrink:0;
+padding:6px 14px;border-radius:8px;
+background:transparent;border:1px solid transparent;
+color:var(--text-dim);font-size:13px;font-weight:500;
+cursor:pointer;transition:.2s;white-space:nowrap;
+font-family:'Inter',sans-serif;
+}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+
+/* Section */
+.section{padding:40px 0}
+
+.section-header{
+display:flex;align-items:center;gap:14px;
+margin-bottom:24px;
+}
+
+.section-icon{
+width:44px;height:44px;border-radius:12px;
+display:flex;align-items:center;justify-content:center;
+font-size:22px;flex-shrink:0;
+}
+
+.section-header h2{
+font-size:1.5rem;font-weight:700;letter-spacing:-.5px;
+}
+
+.section-header h2 small{
+display:block;font-size:.8rem;font-weight:400;color:var(--text-dim);margin-top:2px;
+}
+
+/* Cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+
+.card{
+background:var(--card);
+border:1px solid var(--card-border);
+border-radius:16px;
+padding:24px;
+transition:.3s;
+position:relative;
+overflow:hidden;
+}
+
+.card::before{
+content:'';position:absolute;top:0;left:0;right:0;height:2px;
+border-radius:16px 16px 0 0;
+opacity:.6;
+}
+
+.card:hover{
+border-color:rgba(255,255,255,.1);
+transform:translateY(-2px);
+box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+
+.card-title{
+font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;
+margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+
+/* Color variants */
+.c-cyan .section-icon{background:rgba(0,212,255,.12);color:var(--cyan)}
+.c-cyan .card::before{background:linear-gradient(90deg,var(--cyan),transparent)}
+.c-cyan .card-title{color:var(--cyan)}
+
+.c-purple .section-icon{background:rgba(139,92,246,.12);color:var(--purple)}
+.c-purple .card::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.c-purple .card-title{color:var(--purple)}
+
+.c-green .section-icon{background:rgba(16,185,129,.12);color:var(--green)}
+.c-green .card::before{background:linear-gradient(90deg,var(--green),transparent)}
+.c-green .card-title{color:var(--green)}
+
+.c-amber .section-icon{background:rgba(245,158,11,.12);color:var(--amber)}
+.c-amber .card::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.c-amber .card-title{color:var(--amber)}
+
+.c-red .section-icon{background:rgba(239,68,68,.12);color:var(--red)}
+.c-red .card::before{background:linear-gradient(90deg,var(--red),transparent)}
+.c-red .card-title{color:var(--red)}
+
+.c-teal .section-icon{background:rgba(20,184,166,.12);color:var(--teal)}
+.c-teal .card::before{background:linear-gradient(90deg,var(--teal),transparent)}
+.c-teal .card-title{color:var(--teal)}
+
+.c-pink .section-icon{background:rgba(236,72,153,.12);color:var(--pink)}
+.c-pink .card::before{background:linear-gradient(90deg,var(--pink),transparent)}
+.c-pink .card-title{color:var(--pink)}
+
+/* Code blocks */
+.cmd-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+
+.cmd-item{
+display:grid;
+grid-template-columns:auto 1fr;
+gap:8px 14px;
+align-items:baseline;
+padding:8px 12px;
+border-radius:8px;
+background:rgba(0,0,0,.25);
+border:1px solid rgba(255,255,255,.03);
+transition:.15s;
+}
+.cmd-item:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.06)}
+
+.cmd-key{
+font-family:'JetBrains Mono',monospace;
+font-size:.85rem;font-weight:600;
+color:var(--cyan);white-space:nowrap;
+}
+
+.cmd-desc{
+font-size:.85rem;color:var(--text-dim);
+}
+
+/* Code block */
+.code-block{
+background:rgba(0,0,0,.35);
+border:1px solid rgba(255,255,255,.05);
+border-radius:10px;
+padding:16px 16px 16px 16px;
+font-family:'JetBrains Mono',monospace;
+font-size:.8rem;
+line-height:1.7;
+color:var(--text-code);
+overflow-x:auto;
+position:relative;
+white-space:pre;
+}
+
+.code-block .comment{color:#6a9955}
+.code-block .flag{color:var(--amber)}
+.code-block .str{color:var(--green)}
+.code-block .cm{color:var(--cyan)}
+.code-block .warn{color:var(--red)}
+
+.copy-btn{
+position:absolute;top:10px;right:10px;
+background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+color:var(--text-dim);padding:4px 10px;border-radius:6px;
+font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;
+transition:.2s;z-index:2;
+}
+.copy-btn:hover{background:rgba(255,255,255,.15);color:var(--text)}
+
+/* Tips */
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+
+.tip{
+display:flex;gap:12px;align-items:flex-start;
+padding:16px;border-radius:12px;
+background:rgba(0,0,0,.2);
+border:1px solid rgba(255,255,255,.04);
+transition:.2s;
+}
+.tip:hover{border-color:rgba(139,92,246,.2);background:rgba(139,92,246,.04)}
+
+.tip-num{
+width:28px;height:28px;border-radius:8px;
+display:flex;align-items:center;justify-content:center;
+font-size:.75rem;font-weight:700;flex-shrink:0;
+background:linear-gradient(135deg,var(--purple),var(--pink));
+color:#fff;
+}
+
+.tip-text{font-size:.85rem;color:var(--text-dim);line-height:1.5}
+.tip-text strong{color:var(--text);font-weight:600}
+
+/* Keyboard shortcuts */
+kbd{
+display:inline-block;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.12);
+border-radius:5px;
+padding:2px 7px;
+font-family:'JetBrains Mono',monospace;
+font-size:.75rem;
+color:var(--text);
+box-shadow:0 2px 0 rgba(0,0,0,.3);
+}
+
+/* Footer */
+.footer{
+text-align:center;padding:60px 20px 40px;
+border-top:1px solid rgba(255,255,255,.05);
+margin-top:40px;
+}
+
+.footer p{color:var(--text-dim);font-size:.85rem}
+.footer .brand{font-weight:700;color:var(--text);font-size:1rem;margin-bottom:8px}
+
+/* Responsive */
+@media(max-width:768px){
+  .cards{grid-template-columns:1fr}
+  .tip-grid{grid-template-columns:1fr}
+  .hero-stats{gap:24px}
+  .hero{padding:50px 0 40px}
+}
+
+/* Scroll animations */
+.fade-up{opacity:0;transform:translateY(24px);transition:.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* Search */
+.search-wrap{
+max-width:480px;margin:0 auto 0;position:relative;
+}
+.search-wrap input{
+width:100%;padding:12px 16px 12px 44px;
+background:var(--card);border:1px solid var(--card-border);
+border-radius:12px;color:var(--text);font-size:.95rem;
+font-family:'Inter',sans-serif;outline:none;transition:.2s;
+}
+.search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+.search-wrap input::placeholder{color:var(--text-dim)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:18px}
+
+.hidden-card{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-dots"></div>
+
+<!-- HERO -->
+<header class="hero container">
+  <div class="hero-badge">⚡ DEVELOPER REFERENCE 2025–2026</div>
+  <h1><span class="grad">Claude Code</span><br>Cheatsheet</h1>
+  <p>La referencia definitiva para impulsar la productividad de tu equipo de desarrollo con Claude Code CLI</p>
+
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Buscar comandos, atajos, tips..." autocomplete="off">
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="num" style="color:var(--cyan)">60+</div><div class="label">Comandos</div></div>
+    <div class="stat"><div class="num" style="color:var(--purple)">12</div><div class="label">Shortcuts</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">10</div><div class="label">Pro Tips</div></div>
+    <div class="stat"><div class="num" style="color:var(--amber)">9</div><div class="label">Secciones</div></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <button class="nav-btn" onclick="scrollTo('#inicio')">⚡ Inicio Rápido</button>
+    <button class="nav-btn" onclick="scrollTo('#slash')">🔧 Slash Commands</button>
+    <button class="nav-btn" onclick="scrollTo('#atajos')">⌨️ Atajos</button>
+    <button class="nav-btn" onclick="scrollTo('#headless')">🚀 Headless/CI</button>
+    <button class="nav-btn" onclick="scrollTo('#permisos')">🛡️ Permisos</button>
+    <button class="nav-btn" onclick="scrollTo('#thinking')">🧠 Thinking/Effort</button>
+    <button class="nav-btn" onclick="scrollTo('#tips')">💡 Tips Pro</button>
+    <button class="nav-btn" onclick="scrollTo('#custom')">📦 Custom</button>
+    <button class="nav-btn" onclick="scrollTo('#config')">⚙️ Config</button>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- 1. INICIO RÁPIDO -->
+<section class="section c-cyan fade-up" id="inicio">
+  <div class="section-header">
+    <div class="section-icon">⚡</div>
+    <h2>Inicio Rápido <small>Instalación y primeros pasos</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="install instalar inicio curl version update actualizar">
+      <div class="card-title">📥 Instalación</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">curl -sL https://install.anthropic.com | sh</span><span class="cmd-desc">Instalar Claude Code</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude --version</span><span class="cmd-desc">Ver versión instalada</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude update</span><span class="cmd-desc">Actualizar a la última versión</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude --verbose --debug</span><span class="cmd-desc">Modo debug para troubleshooting</span></li>
+      </ul>
+    </div>
+    <div class="card" data-search="sesion session iniciar repl continuar resume retomar prompt">
+      <div class="card-title">🚀 Sesiones</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">claude</span><span class="cmd-desc">Iniciar sesión interactiva (REPL)</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude "analiza este proyecto"</span><span class="cmd-desc">Iniciar con prompt directo</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude -c</span><span class="cmd-desc">Continuar última conversación</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude -r "abc123" "prompt"</span><span class="cmd-desc">Retomar sesión por ID</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude --resume</span><span class="cmd-desc">Retomar sesión anterior</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 2. SLASH COMMANDS -->
+<section class="section c-purple fade-up" id="slash">
+  <div class="section-header">
+    <div class="section-icon">🔧</div>
+    <h2>Slash Commands <small>Comandos dentro del REPL interactivo</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="help clear compact exit salir limpiar contexto ayuda historial">
+      <div class="card-title">🧭 Navegación y Contexto</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">/help</span><span class="cmd-desc">Mostrar ayuda y referencia de comandos</span></li>
+        <li class="cmd-item"><span class="cmd-key">/clear</span><span class="cmd-desc">Limpiar historial de conversación</span></li>
+        <li class="cmd-item"><span class="cmd-key">/compact [instrucciones]</span><span class="cmd-desc">Comprimir contexto y liberar tokens</span></li>
+        <li class="cmd-item"><span class="cmd-key">/exit</span><span class="cmd-desc">Salir del REPL (también Ctrl+D)</span></li>
+        <li class="cmd-item"><span class="cmd-key">/context</span><span class="cmd-desc">Visualizar uso de contexto como grilla</span></li>
+        <li class="cmd-item"><span class="cmd-key">/rewind</span><span class="cmd-desc">Retroceder a un checkpoint anterior</span></li>
+        <li class="cmd-item"><span class="cmd-key">/resume</span><span class="cmd-desc">Retomar una conversación previa</span></li>
+      </ul>
+    </div>
+    <div class="card" data-search="config doctor cost mcp ide status vim bashes diagnostico estado costo">
+      <div class="card-title">⚙️ Diagnóstico, Estado y Herramientas</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">/config</span><span class="cmd-desc">Abrir panel de configuración</span></li>
+        <li class="cmd-item"><span class="cmd-key">/doctor</span><span class="cmd-desc">Verificar estado de la instalación</span></li>
+        <li class="cmd-item"><span class="cmd-key">/cost</span><span class="cmd-desc">Ver costo y duración de la sesión actual</span></li>
+        <li class="cmd-item"><span class="cmd-key">/mcp</span><span class="cmd-desc">Gestionar servidores MCP conectados</span></li>
+        <li class="cmd-item"><span class="cmd-key">/ide</span><span class="cmd-desc">Gestionar integraciones con IDE</span></li>
+        <li class="cmd-item"><span class="cmd-key">/vim</span><span class="cmd-desc">Activar modo de edición vim</span></li>
+        <li class="cmd-item"><span class="cmd-key">/bashes</span><span class="cmd-desc">Listar y gestionar tareas en background</span></li>
+        <li class="cmd-item"><span class="cmd-key">/status</span><span class="cmd-desc">Info de versión y conectividad</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3. ATAJOS -->
+<section class="section c-green fade-up" id="atajos">
+  <div class="section-header">
+    <div class="section-icon">⌨️</div>
+    <h2>Atajos de Teclado <small>Domina el terminal sin tocar el mouse</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="shift tab thinking plan mode accept auto aceptar pensar">
+      <div class="card-title">🎯 Modos de Operación</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key"><kbd>Shift</kbd>+<kbd>Tab</kbd></span><span class="cmd-desc">Ciclar: Default → Auto-accept → Plan Mode</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Tab</kbd></span><span class="cmd-desc">Toggle Thinking on / off</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Esc</kbd></span><span class="cmd-desc">Interrumpir respuesta actual</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Esc</kbd> <kbd>Esc</kbd></span><span class="cmd-desc">Limpiar input actual</span></li>
+      </ul>
+    </div>
+    <div class="card" data-search="ctrl cancelar salir historial copiar pegar borrar undo deshacer navegacion">
+      <div class="card-title">⌨️ Navegación y Edición</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>C</kbd></span><span class="cmd-desc">Cancelar operación actual</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>D</kbd></span><span class="cmd-desc">Salir de Claude Code</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>↑</kbd> / <kbd>↓</kbd></span><span class="cmd-desc">Navegar historial de comandos</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>A</kbd> / <kbd>E</kbd></span><span class="cmd-desc">Inicio / Fin de línea</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>W</kbd></span><span class="cmd-desc">Borrar palabra anterior</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>_</kbd></span><span class="cmd-desc">Deshacer</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>U</kbd></span><span class="cmd-desc">Borrar línea completa</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4. HEADLESS -->
+<section class="section c-amber fade-up" id="headless">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <h2>Modo Headless / SDK <small>Para CI/CD, scripts y automatización</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="print mode sdk json output piping cat pipe automatizar script">
+      <div class="card-title">📡 Print Mode (no interactivo)</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">claude -p "query"</span><span class="cmd-desc">Ejecutar y salir (print mode)</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude -p --output-format json "query"</span><span class="cmd-desc">Salida en JSON con metadata</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude -p --max-turns 5 "query"</span><span class="cmd-desc">Limitar turnos de conversación</span></li>
+        <li class="cmd-item"><span class="cmd-key">claude -c -p "check types"</span><span class="cmd-desc">Continuar sesión en modo SDK</span></li>
+      </ul>
+    </div>
+    <div class="card" data-search="piping pipeline git log cat error analizar commits automatizar bash script ci cd">
+      <div class="card-title">🔗 Piping y Scripting</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Piping de contenido a Claude</span>
+<span class="cm">cat</span> logs.txt | <span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"explica estos errores"</span>
+
+<span class="cm">git log</span> --oneline | <span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"resume estos commits"</span>
+
+<span class="cm">cat</span> error.log | <span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"encuentra la causa raíz"</span>
+
+<span class="cm">ls</span> -la | <span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"explica esta estructura"</span>
+
+<span class="comment"># Scripts de automatización</span>
+<span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"analiza codebase"</span> \
+  <span class="flag">--output-format</span> json > analysis.json
+
+<span class="cm">claude</span> <span class="flag">-p</span> <span class="str">"genera tests"</span> \
+  <span class="flag">--max-turns</span> 3 > tests.txt</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. PERMISOS -->
+<section class="section c-red fade-up" id="permisos">
+  <div class="section-header">
+    <div class="section-icon">🛡️</div>
+    <h2>Permisos y Seguridad <small>Control granular de herramientas</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="allow permitir tools herramientas bash git write read seguridad">
+      <div class="card-title">✅ Permitir Herramientas</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Permitir herramientas específicas</span>
+<span class="cm">claude</span> <span class="flag">--allowedTools</span> <span class="str">"Bash(git:*)"</span> <span class="str">"Write"</span> <span class="str">"Read"</span>
+
+<span class="comment"># Permitir solo lectura (git log, diff, grep...)</span>
+<span class="cm">claude</span> <span class="flag">--allowedTools</span> \
+  <span class="str">"Bash(git log:*)"</span> \
+  <span class="str">"Bash(git diff:*)"</span> \
+  <span class="str">"Bash(grep:*)"</span> \
+  <span class="str">"Bash(rg:*)"</span> \
+  <span class="str">"Read"</span></div>
+    </div>
+    <div class="card" data-search="disallow bloquear rm sudo peligroso directorio multi dir sandbox">
+      <div class="card-title">🚫 Bloquear y Multi-directorio</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Bloquear herramientas peligrosas</span>
+<span class="cm">claude</span> <span class="flag">--disallowedTools</span> \
+  <span class="str">"Bash(rm:*)"</span> \
+  <span class="str">"Bash(sudo:*)"</span>
+
+<span class="comment"># Acceso a múltiples directorios</span>
+<span class="cm">claude</span> <span class="flag">--add-dir</span> ../frontend ../backend ../shared
+
+<span class="comment"><span class="warn"># ⚠️ SOLO para sandboxes aislados sin internet</span></span>
+<span class="cm">claude</span> <span class="flag">--dangerously-skip-permissions</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.5 THINKING & EFFORT -->
+<section class="section c-amber fade-up" id="thinking">
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <h2>Thinking, Effort y Ultrathink <small>Controla la profundidad de razonamiento de Claude</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="effort low medium high max esfuerzo razonamiento profundidad adaptive thinking pensar">
+      <div class="card-title">🎚️ /effort — Control de Profundidad (Recomendado)</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key">/effort low</span><span class="cmd-desc">Rápido y barato. Ideal para fixes de sintaxis, lint, refactors simples</span></li>
+        <li class="cmd-item"><span class="cmd-key">/effort medium</span><span class="cmd-desc">Balance entre velocidad y calidad. Bueno para workflows diarios</span></li>
+        <li class="cmd-item"><span class="cmd-key">/effort high</span><span class="cmd-desc">Por defecto. Razonamiento profundo para tareas complejas</span></li>
+        <li class="cmd-item"><span class="cmd-key">/effort max</span><span class="cmd-desc">Máxima capacidad. Solo disponible en Opus 4.6</span></li>
+      </ul>
+      <div class="code-block" style="margin-top:14px"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Configurar effort via variable de entorno</span>
+<span class="flag">CLAUDE_CODE_EFFORT_LEVEL</span>=medium <span class="cm">claude</span>
+
+<span class="comment"># O en settings (~/.claude/settings.json)</span>
+{ <span class="str">"effortLevel"</span>: <span class="str">"medium"</span> }
+
+<span class="comment"># Slider visual: aparece en /model con modelos compatibles</span></div>
+    </div>
+    <div class="card" data-search="ultrathink think hard thinking deprecated deprecado keywords tokens budget presupuesto">
+      <div class="card-title">⚰️ Ultrathink — Deprecado (referencia histórica)</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="warn">⚠️ Las keywords de thinking están DEPRECADAS desde enero 2026.</span>
+<span class="warn">   Extended thinking ahora está habilitado por defecto.</span>
+<span class="warn">   Usa /effort en su lugar para control granular.</span>
+
+<span class="comment"># Jerarquía antigua (ya no asignan tokens):</span>
+<span class="str">"think"</span>         → budget mínimo
+<span class="str">"think hard"</span>    → budget medio
+<span class="str">"think harder"</span>  → budget alto
+<span class="str">"ultrathink"</span>    → budget máximo (31,999 tokens)
+
+<span class="comment"># Ahora el equivalente es:</span>
+<span class="cm">/effort max</span>     → razonamiento máximo adaptativo
+
+<span class="comment"># Para duplicar el budget de thinking (solo 64K output models):</span>
+<span class="flag">MAX_THINKING_TOKENS</span>=63999 <span class="cm">claude</span></div>
+    </div>
+    <div class="card" data-search="adaptive thinking adaptativo opus sonnet interleaved tab verbose pensar entre herramientas">
+      <div class="card-title">🔄 Adaptive Thinking (Opus 4.6+)</div>
+      <ul class="cmd-list">
+        <li class="cmd-item"><span class="cmd-key"><kbd>Tab</kbd></span><span class="cmd-desc">Toggle Thinking on / off en el REPL</span></li>
+        <li class="cmd-item"><span class="cmd-key"><kbd>Ctrl</kbd>+<kbd>O</kbd></span><span class="cmd-desc">Verbose mode: ver el proceso de razonamiento interno</span></li>
+        <li class="cmd-item"><span class="cmd-key">/model</span><span class="cmd-desc">Cambiar modelo y ver slider de effort</span></li>
+        <li class="cmd-item"><span class="cmd-key">/fast</span><span class="cmd-desc">Toggle Fast Mode (2.5x velocidad, 6x costo)</span></li>
+      </ul>
+      <div class="code-block" style="margin-top:14px"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Desactivar adaptive thinking (volver a budget fijo)</span>
+<span class="flag">CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING</span>=1 <span class="cm">claude</span>
+
+<span class="comment"># Con adaptive thinking, Claude piensa ENTRE tool calls:</span>
+<span class="comment"># Lee archivo → piensa → decide → llama herramienta → piensa otra vez</span>
+
+<span class="comment"># Tip: /effort low para tareas simples, ahorra 3-5x en tokens</span>
+<span class="comment"># Tip: /effort max para arquitectura y debugging complejo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. TIPS PRO -->
+<section class="section c-pink fade-up" id="tips">
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <h2>Tips Pro para Productividad <small>De junior a senior en cada prompt</small></h2>
+  </div>
+  <div class="tip-grid">
+    <div class="tip" data-search="compact contexto liberar tokens ventana"><div class="tip-num">1</div><div class="tip-text">Usa <strong>/compact</strong> frecuentemente para liberar contexto y mantener la calidad de respuestas alta</div></div>
+    <div class="tip" data-search="plan mode planificar pensar complejo shift tab"><div class="tip-num">2</div><div class="tip-text"><strong>Shift+Tab+Tab → Plan Mode</strong> antes de tareas complejas. Claude planificará antes de escribir código</div></div>
+    <div class="tip" data-search="sesiones separar tareas diferentes"><div class="tip-num">3</div><div class="tip-text">Inicia <strong>sesiones separadas</strong> para cada tarea. Ahorra tokens y mejora la calidad de las respuestas</div></div>
+    <div class="tip" data-search="archivo contexto referencia include"><div class="tip-num">4</div><div class="tip-text">Usa <strong>@filename</strong> para incluir archivos como contexto directo en tu prompt</div></div>
+    <div class="tip" data-search="bash ejecutar comando antes procesar"><div class="tip-num">5</div><div class="tip-text">Usa <strong>!`comando`</strong> para ejecutar bash inline antes de que Claude procese el resultado</div></div>
+    <div class="tip" data-search="claude.md memoria proyecto memory"><div class="tip-num">6</div><div class="tip-text">Crea <strong>CLAUDE.md</strong> en la raíz de tu proyecto para dar contexto persistente y reglas al agente</div></div>
+    <div class="tip" data-search="global preferencias usuario personal"><div class="tip-num">7</div><div class="tip-text"><strong>~/.claude/CLAUDE.md</strong> para preferencias globales que aplican a todos tus proyectos</div></div>
+    <div class="tip" data-search="cost costo tokens monitorear gasto"><div class="tip-num">8</div><div class="tip-text">Monitorea costos con <strong>/cost</strong> y agrégalo a tu status line para nunca perder de vista el gasto</div></div>
+    <div class="tip" data-search="git commit checkpoint rewind volver atrás"><div class="tip-num">9</div><div class="tip-text">Usa <strong>git commits como checkpoints</strong> + <strong>/rewind</strong> para volver atrás si Claude toma un camino incorrecto</div></div>
+    <div class="tip" data-search="thinking extended pensar razonamiento tab tokens"><div class="tip-num">10</div><div class="tip-text"><strong>Extended Thinking</strong> se activa con <kbd>Tab</kbd>. Usa más tokens pero mejora drásticamente el razonamiento complejo</div></div>
+  </div>
+</section>
+
+<!-- 7. CUSTOM -->
+<section class="section c-teal fade-up" id="custom">
+  <div class="section-header">
+    <div class="section-icon">📦</div>
+    <h2>Custom Commands, Skills y Agentes <small>Personalización para tu equipo</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="custom commands slash equipo debug test deploy personalizar">
+      <div class="card-title">⚡ Custom Slash Commands</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Comandos de equipo (compartidos via git)</span>
+.claude/commands/debug.md    →  <span class="cm">/debug</span>
+.claude/commands/test.md     →  <span class="cm">/test</span>
+.claude/commands/deploy.md   →  <span class="cm">/deploy</span>
+
+<span class="comment"># Comandos personales (disponibles en todos los proyectos)</span>
+~/.claude/commands/mi-cmd.md →  <span class="cm">/mi-cmd</span>
+
+<span class="comment"># Usar argumentos dinámicos dentro del .md</span>
+Usa <span class="flag">$ARGUMENTS</span> como placeholder en el archivo</div>
+    </div>
+    <div class="card" data-search="skills habilidades agentes subagentes reviewer debugger agent especializado">
+      <div class="card-title">🤖 Skills y Subagentes</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Skills → se invocan con lenguaje natural</span>
+<span class="comment"># Claude decide cuándo usarlos automáticamente</span>
+.claude/skills/mi-skill/<span class="str">SKILL.md</span>
+
+<span class="comment"># Subagentes → instancias especializadas de Claude</span>
+<span class="comment"># Proyecto (compartidos con el equipo):</span>
+.claude/agents/<span class="str">reviewer.md</span>
+
+<span class="comment"># Personales (disponibles en todos los proyectos):</span>
+~/.claude/agents/<span class="str">debugger.md</span>
+
+<span class="comment"># Estructura de un subagente:</span>
+---
+<span class="flag">name:</span>        <span class="str">reviewer</span>
+<span class="flag">description:</span> <span class="str">Expert code review specialist</span>
+<span class="flag">tools:</span>       <span class="str">Read, Grep, Glob, Bash</span>
+<span class="flag">model:</span>       <span class="str">inherit</span>
+---
+You are a senior code reviewer...</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. CONFIG -->
+<section class="section c-purple fade-up" id="config">
+  <div class="section-header">
+    <div class="section-icon">⚙️</div>
+    <h2>Configuración Avanzada <small>Setup de producción para el equipo</small></h2>
+  </div>
+  <div class="cards">
+    <div class="card" data-search="model modelo sonnet opus tools verbose json formato output configurar avanzado">
+      <div class="card-title">🎛️ Comando Completo</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Modelo + herramientas + formato de salida</span>
+<span class="cm">claude</span> \
+  <span class="flag">--model</span> claude-sonnet-4-20250514 \
+  <span class="flag">--add-dir</span> ../apps ../lib ../tools \
+  <span class="flag">--allowedTools</span> <span class="str">"Bash(git:*)"</span> <span class="str">"Write"</span> <span class="str">"Read"</span> \
+  <span class="flag">--verbose</span> \
+  <span class="flag">--output-format</span> json</div>
+    </div>
+    <div class="card" data-search="settings json permisos allow whitelist configuracion archivo statusline">
+      <div class="card-title">📄 Settings Recomendados</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment">// ~/.claude/settings.json</span>
+{
+  <span class="str">"permissions"</span>: {
+    <span class="str">"allow"</span>: [
+      <span class="str">"Bash(git:*)"</span>,
+      <span class="str">"Bash(grep:*)"</span>,
+      <span class="str">"Bash(find:*)"</span>,
+      <span class="str">"Bash(rg:*)"</span>,
+      <span class="str">"Bash(ls:*)"</span>,
+      <span class="str">"Read"</span>
+    ]
+  },
+  <span class="str">"statusLine"</span>: {
+    <span class="str">"type"</span>: <span class="str">"command"</span>,
+    <span class="str">"command"</span>: <span class="str">"bash ~/.claude/statusline.sh"</span>
+  }
+}</div>
+    </div>
+    <div class="card" data-search="worktree git branch rama paralelo review pr pull request merge">
+      <div class="card-title">🌿 Git Worktrees + Claude</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+<span class="comment"># Crear worktree para review paralelo</span>
+<span class="cm">git worktree add</span> ../myapp-review \
+  -b review/cleanup feature-branch
+
+<span class="comment"># Entrar al worktree y trabajar con Claude</span>
+<span class="cm">cd</span> ../myapp-review
+<span class="cm">claude</span> <span class="str">"agrega docs, tests y limpia el estilo"</span>
+
+<span class="comment"># Merge de vuelta al branch principal</span>
+<span class="cm">git merge</span> review/cleanup</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="brand">Claude Code Cheatsheet 🚀</div>
+  <p>Creado para el equipo de desarrollo · Basado en Claude Code CLI de Anthropic · 2025–2026</p>
+  <p style="margin-top:8px;font-size:.75rem;color:rgba(255,255,255,.2)">De junior a senior en cada prompt</p>
+</footer>
+
+<script>
+function scrollTo(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth',block:'start'})}
+
+function copyCode(btn){
+  const block=btn.parentElement;
+  const text=block.innerText.replace('Copiar','').trim();
+  navigator.clipboard?.writeText(text);
+  btn.textContent='✓ Copiado';
+  setTimeout(()=>btn.textContent='Copiar',1500);
+}
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})
+},{threshold:.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+document.getElementById('search').addEventListener('input',function(){
+  const q=this.value.toLowerCase().trim();
+  document.querySelectorAll('.card, .tip').forEach(el=>{
+    const text=(el.textContent+' '+(el.dataset.search||'')).toLowerCase();
+    el.classList.toggle('hidden-card',q&&!text.includes(q));
+  });
+});
+</script>
+</body>
+</html>
